@@ -70,6 +70,10 @@ class HandlerRegistry implements HandlerRegistryInterface
      */
     public function getHandler(int $direction, string $typeName, string $format)
     {
+        if (is_a($typeName, \BackedEnum::class, true)) {
+            return $this->handlers[$direction][\BackedEnum::class][$format];
+        }
+
         if (!isset($this->handlers[$direction][$typeName][$format])) {
             return null;
         }

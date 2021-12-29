@@ -31,6 +31,7 @@ use JMS\Serializer\GraphNavigator\Factory\DeserializationGraphNavigatorFactory;
 use JMS\Serializer\GraphNavigator\Factory\GraphNavigatorFactoryInterface;
 use JMS\Serializer\GraphNavigator\Factory\SerializationGraphNavigatorFactory;
 use JMS\Serializer\Handler\ArrayCollectionHandler;
+use JMS\Serializer\Handler\BackedEnumHandler;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
@@ -262,6 +263,7 @@ final class SerializerBuilder
     public function addDefaultHandlers(): self
     {
         $this->handlersConfigured = true;
+        $this->handlerRegistry->registerSubscribingHandler(new BackedEnumHandler());
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
         $this->handlerRegistry->registerSubscribingHandler(new StdClassHandler());
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());

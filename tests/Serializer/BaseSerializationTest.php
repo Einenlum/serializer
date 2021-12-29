@@ -19,6 +19,7 @@ use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Functions;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\ArrayCollectionHandler;
+use JMS\Serializer\Handler\BackedEnumHandler;
 use JMS\Serializer\Handler\ConstraintViolationHandler;
 use JMS\Serializer\Handler\DateHandler;
 use JMS\Serializer\Handler\FormErrorHandler;
@@ -39,6 +40,8 @@ use JMS\Serializer\Tests\Fixtures\AuthorList;
 use JMS\Serializer\Tests\Fixtures\AuthorReadOnly;
 use JMS\Serializer\Tests\Fixtures\AuthorReadOnlyPerClass;
 use JMS\Serializer\Tests\Fixtures\AuthorsInline;
+use JMS\Serializer\Tests\Fixtures\BackedIntEnum;
+use JMS\Serializer\Tests\Fixtures\BackedStringEnum;
 use JMS\Serializer\Tests\Fixtures\BlogPost;
 use JMS\Serializer\Tests\Fixtures\CircularReferenceCollection;
 use JMS\Serializer\Tests\Fixtures\CircularReferenceParent;
@@ -1435,6 +1438,38 @@ abstract class BaseSerializationTest extends TestCase
     }
 
     /**
+     * @group enum
+     */
+    public function testDeserializeBackedEnums()
+    {
+        self::assertEquals(
+            BackedIntEnum::FOO,
+            $this->deserialize($this->getContent('backed_int_enum'), BackedIntEnum::class)
+        );
+
+        self::assertEquals(
+            BackedStringEnum::FOO,
+            $this->deserialize($this->getContent('backed_string_enum'), BackedStringEnum::class)
+        );
+    }
+
+    /**
+     * @group enum
+     */
+    public function testSerializeBackedEnums()
+    {
+        self::assertEquals(
+            $this->getContent('backed_int_enum'),
+            $this->serialize(BackedIntEnum::FOO)
+        );
+
+        self::assertEquals(
+            $this->getContent('backed_string_enum'),
+            $this->serialize(BackedStringEnum::FOO)
+        );
+    }
+
+    /**
      * @group polymorphic
      */
     public function testPolymorphicObjectsWithGroup()
@@ -1857,6 +1892,7 @@ abstract class BaseSerializationTest extends TestCase
         $this->handlerRegistry = new HandlerRegistry();
         $this->handlerRegistry->registerSubscribingHandler(new ConstraintViolationHandler());
         $this->handlerRegistry->registerSubscribingHandler(new StdClassHandler());
+        $this->handlerRegistry->registerSubscribingHandler(new BackedEnumHandler());
         $this->handlerRegistry->registerSubscribingHandler(new DateHandler());
         $this->handlerRegistry->registerSubscribingHandler(new FormErrorHandler(new IdentityTranslator()));
         $this->handlerRegistry->registerSubscribingHandler(new ArrayCollectionHandler());
